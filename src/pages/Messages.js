@@ -2,6 +2,7 @@ import React from 'react'
 import { Container, Paper, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import DialogsList from '../components/messages/MessagesDialogsList'
+import MessagesHistory from '../components/messages/MessagesHistory'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -18,6 +19,7 @@ const Messages = ({state}) => {
   return (
     <Paper className={classes.root}>
       <DialogsList />
+      <MessagesHistory />
     </Paper>
   )
 }

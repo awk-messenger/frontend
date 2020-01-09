@@ -1,17 +1,19 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { AppBar, Toolbar, Typography } from '@material-ui/core'
+import { AppBar, Toolbar, SvgIcon, IconButton } from '@material-ui/core'
+import { ReactComponent as Logo } from '../images/logo.svg'
 
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.secondary.main,
     flexGrow: 1,
   },
-  menuButton: {
+  logo: {
     marginRight: theme.spacing(2),
   },
   toolbar: {
-    minHeight: '42px'
+    minHeight: '48px',
+    boxShadow: '0 2px 4px 0 rgba(0,0,0,.08), 0 0 2px 0 rgba(0,0,0,.06)'
   }
 }))
 
@@ -20,9 +22,11 @@ const NavigationBar = () => {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar position="fixed" elevation={0}>
         <Toolbar className={classes.toolbar}>
-          <Typography className={classes.menuButton} variant="h5">W</Typography>
+          <IconButton className={classes.logo}>
+            {/*<Logo />*/}
+          </IconButton>
         </Toolbar>
       </AppBar>
     </div>

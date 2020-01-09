@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { Switch, Route } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import Home from '../pages/Home'
-import Messages from '../pages/Messages'
+import MessagesDialogs from '../pages/MessagesDialogs'
+import MessagesHistory from '../pages/MessagesHistory'
 import socket from '../websocket'
 
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.default,
-    color: theme.palette.text.primary
+    color: theme.palette.text.primary,
   },
 }))
 
@@ -24,11 +25,16 @@ const App = () => {
   document.body.className = classes.root
 
   return (
-    <Router>
+    <>
       <Switch>
+        {/* Chats */}
+        <Route path="/im/chat/:id">
+          <MessagesHistory state={state} />
+        </Route>
+
         {/* Messages */}
-        <Route path="/messages">
-          <Messages state={state} />
+        <Route path="/im">
+          <MessagesDialogs state={state} />
         </Route>
 
         {/* Home */}
@@ -36,7 +42,7 @@ const App = () => {
           <Home state={state} />
         </Route>
       </Switch>
-    </Router>
+    </>
   )
 }
 

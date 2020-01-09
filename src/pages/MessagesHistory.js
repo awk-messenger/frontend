@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { List, Container } from '@material-ui/core'
+import { List, Grid } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Message from '../components/messages/Message'
 import InputBar from '../components/messages/InputBar'
@@ -8,7 +8,7 @@ const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
     overflow: 'auto',
-    maxHeight: 'calc(100vh - 48px)',
+    maxHeight: 'calc(100vh - 48px - 48px - 16px - 1px)',
   },
 }))
 
@@ -131,7 +131,7 @@ const MessagesHistory = () => {
   }, [])
 
   return (
-    <>
+    <Grid style={{ width: '100%' }}>
       <List className={classes.root}>
         {messages &&
           messages.map((message, i) => {
@@ -162,7 +162,7 @@ const MessagesHistory = () => {
       </List>
 
       <InputBar />
-    </>
+    </Grid>
   )
 }
 

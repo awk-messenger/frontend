@@ -1,14 +1,18 @@
-import React, { useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { List, Grid } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Message from '../components/messages/Message'
 import InputBar from '../components/messages/InputBar'
+import isMobile from 'is-mobile'
 
+const chromeAddressBarHeight = 56
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
     overflow: 'auto',
-    maxHeight: 'calc(100vh - 48px - 48px - 16px - 1px)',
+    maxHeight: `calc(100vh - 48px - 48px - 16px - 1px - ${
+      isMobile() ? chromeAddressBarHeight : 0
+    }px)`,
   },
 }))
 
@@ -121,6 +125,8 @@ const MessagesHistory = () => {
   const [messages, setMessagesHistory] = useState([])
   const [users, setUsersData] = useState({})
   const classes = useStyles()
+  const listRef = useRef()
+  const refs = {}
 
   useEffect(() => {
     async function get() {
@@ -130,37 +136,46 @@ const MessagesHistory = () => {
     get()
   }, [])
 
+  const MessageBox = ({ message, i }) => {
+    const [highlighted, setHighlightState] = useState(false)
+    const replyMessage = messages.find(e => e.id === message.reply_message_id)
+    const user = users[message.user_id]
+    const { id } = message
+    const isDense =
+      !replyMessage && i !== 0 && messages[i - 1].user_id === message.user_id
+    const reply = replyMessage
+      ? {
+        message: replyMessage,
+        user: users[replyMessage.user_id],
+        ref: refs[replyMessage.id],
+        listRef
+      }
+      : {}
+
+    const setRef = (ref) => {
+      refs[id] = { ref, setHighlightState }
+    }
+
+    return (
+      <Message
+        isDense={isDense}
+        message={message}
+        user={user}
+        reply={reply}
+        setRef={setRef}
+        highlighted={highlighted}
+      />
+    )
+  }
+
   return (
     <Grid style={{ width: '100%' }}>
-      <List className={classes.root}>
+      <List ref={listRef} className={classes.root}>
         {messages &&
-          messages.map((message, i) => {
-            const replyMessage = messages.find(
-              e => e.id === message.reply_message_id
-            )
-            const user = users[message.user_id]
-            const isDense =
-              !replyMessage &&
-              i !== 0 &&
-              messages[i - 1].user_id === message.user_id
-            const { id } = message
-            const reply = {
-              message: replyMessage,
-              user: replyMessage ? users[replyMessage.user_id] : null,
-            }
-
-            return (
-              <Message
-                key={id}
-                isDense={isDense}
-                message={message}
-                user={user}
-                reply={reply}
-              />
-            )
-          })}
+          messages.map((message, i) => (
+            <MessageBox key={i} message={message} i={i} />
+          ))}
       </List>
-
       <InputBar />
     </Grid>
   )

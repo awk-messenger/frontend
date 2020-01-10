@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { makeStyles, Grid, Avatar, Typography, List } from '@material-ui/core'
+import { makeStyles, Grid, Avatar, Typography, List,useMediaQuery } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import routes from '../config/routes'
 import DrawerRoute from './DrawerRoute'
+import { MIN_WIDTH as minWidth } from '../config/constants'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -11,8 +12,8 @@ const useStyles = makeStyles(theme => ({
     float: 'left',
     width: theme.spacing(33),
     marginRight: 0,
-    marginLeft: 12,
-    marginTop: 12,
+    marginLeft: theme.spacing(2),
+    marginTop: theme.spacing(2),
   },
   verticalAlign: {
     display: 'flex',
@@ -43,6 +44,7 @@ const getUser = async () => ({
 const AppDrawer = () => {
   const [user, setUser] = useState({})
   const classes = useStyles()
+  const isXsm = !(useMediaQuery(`(min-width: ${minWidth}px)`))
 
   useEffect(() => {
     const get = async () => {
@@ -53,9 +55,9 @@ const AppDrawer = () => {
 
   const userFullName = user.first_name + ' ' + user.last_name
 
-  return (
+  return isXsm ? null : (
     <div className={classes.root}>
-      <Link to={user.domain} className={classes.link}>
+      <Link to={'/' + user.domain} className={classes.link}>
         <Grid container spacing={2}>
           <Grid item>
             <Avatar alt={userFullName} src={user.avatar} />

@@ -69,8 +69,8 @@ const MessagesDialogs = ({ state }) => {
     <List className={classes.list} disablePadding>
       {dialogs &&
         dialogs.map((dialog, i) => (
-          <>
-            <ListItem component={Link} to={'/im/chat/' + dialog.id} button key={i}>
+          <div key={i}>
+            <ListItem component={Link} to={'/im/chat/' + dialog.id} button>
               <ListItemAvatar>
                 <Avatar alt={dialog.title} src={dialog.cover} />
               </ListItemAvatar>
@@ -86,7 +86,7 @@ const MessagesDialogs = ({ state }) => {
               />
             </ListItem>
             <Divider />
-          </>
+          </div>
         ))}
     </List>
   )

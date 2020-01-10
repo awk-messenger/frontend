@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
-import { Box, InputBase, Divider, Grid, IconButton } from '@material-ui/core'
+import { InputBase, Divider, IconButton } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { SendRounded, AttachmentRounded } from '@material-ui/icons'
-import { blue } from '@material-ui/core/colors'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -15,13 +14,19 @@ const useStyles = makeStyles(theme => ({
   },
   input: {
     flex: 1,
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
     paddingTop: theme.spacing(1),
     paddingBottom: theme.spacing(1),
   },
-  iconButton: {
+  sendButton: {
     color: theme.palette.primary.main,
+  },
+  attachmentButton: {
+    svg: {
+      transform: 'rotateZ(-45deg)',
+    },
+    color: theme.palette.text.hint,
   },
 }))
 
@@ -40,8 +45,8 @@ const InputBar = () => {
     <>
       <Divider />
       <form className={classes.root}>
-        <IconButton className={classes.iconButton}>
-          <AttachmentRounded />
+        <IconButton className={classes.attachmentButton}>
+          <AttachmentRounded className={classes.attachmentButton.svg} />
         </IconButton>
         <InputBase
           placeholder="Начните писать..."
@@ -49,7 +54,7 @@ const InputBar = () => {
           className={classes.input}
           fullWidth
         />
-        <IconButton className={classes.iconButton} disabled={isSendForbidden}>
+        <IconButton className={classes.sendButton} disabled={isSendForbidden}>
           <SendRounded />
         </IconButton>
       </form>

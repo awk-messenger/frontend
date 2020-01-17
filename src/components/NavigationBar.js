@@ -8,6 +8,7 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
   },
   logo: {
+    color: 'white',
     marginRight: theme.spacing(2),
   },
   toolbar: {

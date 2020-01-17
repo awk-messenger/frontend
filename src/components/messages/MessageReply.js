@@ -28,13 +28,18 @@ const MessageReply = ({ reply }) => {
   const classes = useStyles()
   if (!reply.message) return null
 
-  const { message, user, ref: refObject, listRef } = reply
+  const { message, user, ref: refObject } = reply
   const { text } = message
   const fullName = user ? `${user.first_name} ${user.last_name}` : 'UNNAMED'
-  const onClick = () => {
-    listRef.current.scrollTo(0, refObject.ref.current.offsetTop)
+  const onClick = e => {
+    e.stopPropagation()
+
+    refObject.ref.current.scrollIntoView({ block: 'center', behavior: 'smooth' })
     refObject.setHighlightState(true)
-    setTimeout(() => refObject.setHighlightState(false), 1000)
+    const timeout = setTimeout(() => {
+      refObject.setHighlightState(false)
+      clearTimeout(timeout)
+    }, 1000)
   }
 
   return (

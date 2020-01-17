@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { List, Grid } from '@material-ui/core'
+import { List } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Message from '../components/messages/Message'
 import InputBar from '../components/messages/InputBar'
@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const getMessages = async () =>
-  Array(5)
+  Array(2)
     .fill([
       {
         id: 1,
@@ -126,35 +126,38 @@ const MessagesHistory = () => {
   const [users, setUsersData] = useState({})
   const classes = useStyles()
   const listRef = useRef()
+  const messagesEndRef = useRef()
   const refs = {}
 
   useEffect(() => {
     async function get() {
       setMessagesHistory(await getMessages())
       setUsersData(await getUsers())
+      listRef.current.scrollTo(0, messagesEndRef.current.offsetTop)
     }
     get()
   }, [])
 
+  useEffect(() => {
+    listRef.current.scrollTo(0, messagesEndRef.current.offsetTop)
+  }, [messages])
+
   const MessageBox = ({ message, i }) => {
     const [highlighted, setHighlightState] = useState(false)
-    const replyMessage = messages.find(e => e.id === message.reply_message_id)
+    const { id, user_id, reply_message_id } = message
+    const replyMessage = messages.find(e => e.id === reply_message_id)
     const user = users[message.user_id]
-    const { id } = message
     const isDense =
-      !replyMessage && i !== 0 && messages[i - 1].user_id === message.user_id
+      !replyMessage && i !== 0 && messages[i - 1].user_id === user_id
     const reply = replyMessage
       ? {
-        message: replyMessage,
-        user: users[replyMessage.user_id],
-        ref: refs[replyMessage.id],
-        listRef
-      }
+          message: replyMessage,
+          user: users[replyMessage.user_id],
+          ref: refs[replyMessage.id],
+        }
       : {}
 
-    const setRef = (ref) => {
-      refs[id] = { ref, setHighlightState }
-    }
+    const setRef = ref => (refs[id] = { ref, setHighlightState, highlighted })
 
     return (
       <Message
@@ -169,15 +172,16 @@ const MessagesHistory = () => {
   }
 
   return (
-    <Grid style={{ width: '100%' }}>
+    <div style={{ width: '100%' }}>
       <List ref={listRef} className={classes.root}>
         {messages &&
-          messages.map((message, i) => (
-            <MessageBox key={i} message={message} i={i} />
-          ))}
+          messages.map((message, i) =>
+            message ? <MessageBox key={i} message={message} i={i} /> : null
+          )}
+        <div ref={messagesEndRef} />
       </List>
-      <InputBar />
-    </Grid>
+      <InputBar setMessagesHistory={setMessagesHistory} />
+    </div>
   )
 }
 

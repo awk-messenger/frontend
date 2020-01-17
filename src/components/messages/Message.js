@@ -51,14 +51,20 @@ const useStyles = makeStyles(theme => ({
     color: fade(theme.palette.primary.light, 0.2),
   },
   highlight: {
-    background: fade(theme.palette.primary.light, 0.1)
+    background: fade(theme.palette.primary.light, 0.1),
+  },
+  marginLeft: {
+    marginLeft: theme.spacing(9)
+  },
+  messageBox: {
+    minHeight: theme.spacing(3)
   }
 }))
 
 const Message = ({ message, user, reply, isDense, setRef, highlighted }) => {
   const [focused, setFocusedState] = useState(false)
   const [isHovered, setHoverState] = useState(false)
-  const onClick = id => {
+  const onClick = () => {
     setFocusedState(!focused)
   }
 
@@ -83,20 +89,24 @@ const Message = ({ message, user, reply, isDense, setRef, highlighted }) => {
     >
       <Grid container>
         {/** Avatar */}
-        <Grid item className={classes.avatar}>
-          <Link to={'/' + domain}>
-            <Avatar alt={domain} src={photo}></Avatar>
-          </Link>
-        </Grid>
+        {isDense ? (
+          <Grid item className={classes.marginLeft} />
+        ) : (
+          <Grid item className={classes.avatar}>
+            <Link to={'/' + domain}>
+              <Avatar alt={domain} src={photo}></Avatar>
+            </Link>
+          </Grid>
+        )}
 
         {/** Message box */}
-        <Grid item sm container direction="column">
-          <Grid item>
+        <Grid className={classes.messageBox} item xs container direction="column">
+          {!isDense && <Grid item>
             <Link className={classes.link} to={'/' + domain}>
               {fullName}
             </Link>
             <span className={classes.ts}>&nbsp;{ts}</span>
-          </Grid>
+          </Grid>}
           <Grid item>
             <ReplyMessage reply={reply} />
             <Typography className={classes.text} variant="body2">

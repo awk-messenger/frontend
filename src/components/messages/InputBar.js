@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { InputBase, Divider, IconButton } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { SendRounded, AttachmentRounded } from '@material-ui/icons'
 
 const useStyles = makeStyles(theme => ({
@@ -23,15 +23,16 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.primary.main,
   },
   attachmentButton: {
-    svg: {
-      transform: 'rotateZ(-45deg)',
-    },
     color: theme.palette.text.hint,
   },
+  rotateIcon: {
+    transform: 'rotateZ(-45deg)',
+  }
 }))
 
-const InputBar = () => {
+const InputBar = ({ setMessagesHistory }) => {
   const [isSendForbidden, setIsSendForbidden] = useState(true)
+  const inputRef = useRef()
   const classes = useStyles()
 
   const onInputChange = e => {
@@ -41,20 +42,39 @@ const InputBar = () => {
     else setIsSendForbidden(false)
   }
 
+  const onSendClick = e => {
+    e.preventDefault()
+    if (isSendForbidden) return
+
+    const { value: text } = inputRef.current
+    const message = {
+      id: Math.floor(Math.random() * 100000),
+      text,
+      chat_id: 1,
+      user_id: 1,
+      ts: Date.now()
+    }
+
+    setMessagesHistory(prev => [ ...prev, message])
+    inputRef.current.value = ''
+    setIsSendForbidden(true)
+  }
+
   return (
     <>
       <Divider />
-      <form className={classes.root}>
+      <form className={classes.root} onSubmit={onSendClick}>
         <IconButton className={classes.attachmentButton}>
-          <AttachmentRounded className={classes.attachmentButton.svg} />
+          <AttachmentRounded className={classes.rotateIcon} />
         </IconButton>
         <InputBase
+          inputProps={{ ref: inputRef }}
           placeholder="Начните писать..."
           onChange={onInputChange}
           className={classes.input}
           fullWidth
         />
-        <IconButton className={classes.sendButton} disabled={isSendForbidden}>
+        <IconButton onClick={onSendClick} className={classes.sendButton} disabled={isSendForbidden}>
           <SendRounded />
         </IconButton>
       </form>
